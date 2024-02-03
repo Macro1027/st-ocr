@@ -1,0 +1,7 @@
+# Ignore python build artifacts
+scripts/__pycache__/
+
+# Ignore virtual environment
+venv/
+
+
