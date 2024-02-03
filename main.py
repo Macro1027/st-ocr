@@ -27,6 +27,10 @@ def capture_video():
     video_capture.set(cv2.CAP_PROP_BUFFERSIZE, 2)
     return video_capture
 
+def freeze_frame(latest):
+    print(latest)
+
+
 def display_ocr_results(frame, text_queue, conf_thresh=50, text_placeholder=None):
     # Display OCR results on the frame if available.
     if not text_queue.empty():
@@ -50,8 +54,14 @@ def display_ocr_results(frame, text_queue, conf_thresh=50, text_placeholder=None
         
         if len(to_append) > 0:
             text_placeholder.markdown(' '.join(to_append))
+            return to_append
+        
+        return None
 
 def main():
+    # Global variables
+    latest = [] # Latest 3 texts detected by OCR
+
     # Initialise queues and start threads
     queues = initialize_queues()
     start_threads(queues)
@@ -76,8 +86,14 @@ def main():
 
         frame = cv2.resize(frame, (840, 480))
 
-        # Display OCR results on the frame if available.
-        display_ocr_results(frame, queues['text_queue'], conf_thresh, text_placeholder)
+        # Display OCR results on the frame if available, whilst retrieving latest text.
+        output = display_ocr_results(frame, queues['text_queue'], conf_thresh, text_placeholder)
+        
+        # Add latest text to list
+        if output:
+            latest.append(output)
+            if len(latest) > 3:
+                latest.pop(0)
 
         # Add frame to queue if it is empty
         if queues['frame_queue'].empty():
@@ -96,6 +112,8 @@ def main():
     # Release reesources
     cap.release()
     cv2.destroyAllWindows()
+
+    st.button('Stop', on_click=freeze_frame(latest))
 
 
 # Plan - 

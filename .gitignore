@@ -4,4 +4,7 @@ scripts/__pycache__/
 # Ignore virtual environment
 venv/
 
+# Ignore vscode files
+.vscode/
+
 
