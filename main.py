@@ -2,6 +2,11 @@ import cv2
 import time
 import queue
 import threading
+
+# Adding a lock for thread-safe operations
+thread_lock = threading.Lock()
+
+import threading
 import streamlit as st
 
 from scripts.ocr import ocr_thread
