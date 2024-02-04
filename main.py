@@ -7,6 +7,7 @@ import streamlit as st
 from scripts.ocr import ocr_thread
 from scripts.chatbot import run_chatbot
 from scripts.spelling import correct_spelling
+from scripts.perplexity_api import chat_completion
 
 def initialize_queues():
     # Create and return all necessary queues for the application.
@@ -27,8 +28,9 @@ def capture_video():
     video_capture.set(cv2.CAP_PROP_BUFFERSIZE, 2)
     return video_capture
 
-def freeze_frame(latest):
-    print(latest)
+def freeze_frame():
+    likely_text = chat_completion(f"latest_ocr_values = {st.session_state.latest}")
+    print(likely_text)
 
 
 def display_ocr_results(frame, text_queue, conf_thresh=50, text_placeholder=None):
@@ -60,7 +62,11 @@ def display_ocr_results(frame, text_queue, conf_thresh=50, text_placeholder=None
 
 def main():
     # Global variables
-    latest = [] # Latest 3 texts detected by OCR
+    if "latest" not in st.session_state:
+        st.session_state.latest = []
+
+    if st.button('hello'):
+        freeze_frame()
 
     # Initialise queues and start threads
     queues = initialize_queues()
@@ -79,8 +85,6 @@ def main():
     while run:
         ret, frame = cap.read()
 
-        start = time.perf_counter()
-
         if not ret:
             break
 
@@ -91,20 +95,15 @@ def main():
         
         # Add latest text to list
         if output:
-            latest.append(output)
-            if len(latest) > 3:
-                latest.pop(0)
+            st.session_state["latest"].append(output)
+            if len(st.session_state.latest) > 3:
+                st.session_state.latest = st.session_state.latest[1:]
 
         # Add frame to queue if it is empty
         if queues['frame_queue'].empty():
             queues['frame_queue'].put(frame)
 
 
-        end = time.perf_counter()
-        fps = 1/(end - start)
-
-        # Display frame with FPS
-        cv2.putText(frame, f'FPS: {fps:.2f}', (50, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         FRAME_WINDOW.image(frame, channels="BGR")
     else:
         st.write('Stopped')
@@ -112,8 +111,6 @@ def main():
     # Release reesources
     cap.release()
     cv2.destroyAllWindows()
-
-    st.button('Stop', on_click=freeze_frame(latest))
 
 
 # Plan - 

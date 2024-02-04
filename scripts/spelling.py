@@ -1,7 +1,6 @@
-from spellchecker import Spellchecker
-
+from spellchecker import SpellChecker
 def correct_spelling(text):
-    spell = Spellchecker()
+    spell = SpellChecker()
 
     corrected_text = []
     for word in text.split():
@@ -13,4 +12,3 @@ def correct_spelling(text):
 
 if __name__ == "__main__":
     print(correct_spelling("thiis is a testt"))
-    
