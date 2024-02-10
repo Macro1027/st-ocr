@@ -7,8 +7,12 @@ url = "https://api.perplexity.ai/chat/completions"
 ppx_prompt = '''Given a Python list named latest_ocr_values, such as ['I am a Python', 'I a pthon', 
 'I python', 'I am a python', 'a'], directly provide the text that is most consistently detected by the OCR. 
 If multiple answers are possible, choose the most likely one only. If there is no clear answer, state 'None'. 
-The output must follow the format: 'your_answer'. Do not explain yourself afterwards, do not include
+The output must follow the format: 'OCR scanned text: (your_answer)'. Do not explain yourself afterwards, do not include
 multiple valid outputs. Do not include any other information.'''
+
+normal_prompt = '''Be a good assistant and answer my question, only using information from the following prompt or relating to it, as well as 
+knowledge you have about this prompt. If no information is given or if the question is not relevant to the information given, 
+simply answer as normal, using any knowledge you have.'''
 
 headers = {
     "Authorization": "Bearer " + APY_KEY,
@@ -21,7 +25,7 @@ payload = {
     "messages": [
         {
             "role": "system",
-            "content": ppx_prompt
+            "content": ""
         },
         {
             "role": "user",
@@ -31,7 +35,7 @@ payload = {
 }
     
 # Perform a chat completion in a separate thread
-def chat_completion(prompt):
+def chat_completion(prompt, info, mode="normal"):
     while True:
         # If queue is empty, exit the loop
         if not prompt:
@@ -39,7 +43,12 @@ def chat_completion(prompt):
         
         # Copy payload and insert prompt
         pl = payload.copy()
-        pl["messages"][1]["content"] = prompt
+        if mode == "ocr":
+            pl["messages"][0]["content"] = ppx_prompt
+        elif mode == "normal":
+            pl["messages"][0]["content"] = normal_prompt
+
+        pl["messages"][1]["content"] = f"Prompt: {prompt}. Information: {info}."
 
         # Perform chat completion and add results to queue
         response = requests.post(url, json=pl, headers=headers)

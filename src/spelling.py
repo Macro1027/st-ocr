@@ -1,4 +1,5 @@
 from spellchecker import SpellChecker
+
 def correct_spelling(text):
     spell = SpellChecker()
 
@@ -12,3 +13,4 @@ def correct_spelling(text):
 
 if __name__ == "__main__":
     print(correct_spelling("thiis is a testt"))
+

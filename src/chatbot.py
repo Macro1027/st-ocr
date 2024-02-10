@@ -6,6 +6,13 @@ import os
 # Add the directory containing this script to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+def chatbot_say(message):
+    with st.chat_message("assistant", avatar="🔮"):
+        st.markdown(message)
+
+        # Add chatbot response to chat history
+        st.session_state.chat_history.append(("assistant", message))
+
 def run_chatbot():
     from perplexity_api import chat_completion
 
@@ -31,7 +38,11 @@ def run_chatbot():
         # Add user message to chat history
         st.session_state.chat_history.append(("user", prompt))
 
-        response = chat_completion(prompt)
+        info = "none"
+        if st.session_state.latest: 
+            info = st.session_state.latest
+            
+        response = chat_completion(prompt, info, mode="normal")
 
         # Display chatbot response
         with st.chat_message("assistant", avatar="🔮"):
