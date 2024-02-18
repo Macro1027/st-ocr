@@ -1,6 +1,7 @@
 import requests
+import streamlit as st
 
-APY_KEY = "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"
+API_KEY = st.secrets["API_KEY"]
 
 url = "https://api.perplexity.ai/chat/completions"
 
@@ -15,7 +16,7 @@ knowledge you have about this prompt. If no information is given or if the quest
 simply answer as normal, using any knowledge you have.'''
 
 headers = {
-    "Authorization": "Bearer " + APY_KEY,
+    "Authorization": "Bearer " + API_KEY,
     "accept": "application/json",
     "content-type": "application/json"
 }
