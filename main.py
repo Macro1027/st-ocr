@@ -4,7 +4,8 @@ import threading
 import streamlit as st
 
 from src.ocr import ocr_thread
-from src.chatbot import run_chatbot, chat_completion
+from src.chatbot import run_chatbot
+from src.perplexity_api import chat_completion
 from src.spelling import correct_spelling
 
 # Globals
