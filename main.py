@@ -3,8 +3,9 @@ import queue
 import threading
 import streamlit as st
 
-# Assuming your src module is organized properly
-from src import ocr_thread, run_chatbot, correct_spelling, chat_completion
+from src.ocr import ocr_thread
+from src.chatbot import run_chatbot, chat_completion
+from src.spelling import correct_spelling
 
 # Globals
 thread_lock = threading.Lock()
