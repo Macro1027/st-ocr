@@ -31,7 +31,7 @@ def setup_video_capture():
 
 def fetch_likely_text():
     """Fetches likely text based on latest OCR values."""
-    return chat_completion(f"latest_ocr_values = {st.session_state["latest"]}")
+    return chat_completion(f"latest_ocr_values = {st.session_state['latest']}")
 
 def process_frame(frame, text_queue, conf_thresh):
     """Processes a single video frame for OCR results."""
