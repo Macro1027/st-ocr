@@ -12,6 +12,7 @@ def ocr_thread(frame_queue, text_queue):
  
         texts = reader.readtext(frame)
         text_queue.put(texts)
+        print(texts)
 
 if __name__ == "__main__":
     import sys

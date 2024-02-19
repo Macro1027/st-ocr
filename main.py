@@ -1,5 +1,6 @@
 import cv2
 import queue
+import numpy as np
 import threading
 import streamlit as st
 
@@ -30,20 +31,23 @@ def setup_video_capture():
 
 def fetch_likely_text():
     """Fetches likely text based on latest OCR values."""
-    return chat_completion(f"latest_ocr_values = {st.session_state.latest}")
+    return chat_completion(f"latest_ocr_values = {st.session_state["latest"]}")
 
 def process_frame(frame, text_queue, conf_thresh):
     """Processes a single video frame for OCR results."""
     if text_queue.empty():
-        return None
+        return None, ""
 
     detections = text_queue.get()
     annotated_frame = frame.copy()
     detected_texts = []
     for (box, text, confidence) in detections:
         if confidence > conf_thresh / 100.0:
-            cv2.rectangle(annotated_frame, box[0], box[2], (0, 255, 0), 2)
-            cv2.putText(annotated_frame, correct_spelling(text), box[0], cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            try:
+                cv2.rectangle(annotated_frame, tuple(box[0]), tuple(box[2]), (0, 255, 0), 2)
+                cv2.putText(annotated_frame, correct_spelling(text), box[0], cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            except Exception as e:
+                print("Failed to add rectangle")
             detected_texts.append(correct_spelling(text))
     return annotated_frame, ' '.join(detected_texts)
 
@@ -70,12 +74,20 @@ def main():
             break
         frame = cv2.resize(frame, (840, 480))
         processed_frame, detected_text = process_frame(frame, queues['text_queue'], conf_thresh)
+        print(detected_text)
         if detected_text:
             st.session_state.latest.append(detected_text)
         FRAME_WINDOW.image(processed_frame if processed_frame is not None else frame, channels="BGR")
 
+        # Add frame to queue if it is empty
+        if queues['frame_queue'].empty():
+            queues['frame_queue'].put(frame)
+
     if st.session_state.camera_frozen and st.session_state.likely_text:
         st.write(st.session_state.likely_text)
+        print(st.session_state.likely_text)
+    else:
+        print("no text found")
 
     run_chatbot()
     cap.release()

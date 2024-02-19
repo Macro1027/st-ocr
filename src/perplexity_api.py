@@ -1,7 +1,8 @@
 import requests
 import streamlit as st
 
-API_KEY = st.secrets["API_KEY"]
+# API_KEY = st.secrets["API_KEY"]
+API_KEY = "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"
 
 url = "https://api.perplexity.ai/chat/completions"
 
@@ -11,7 +12,7 @@ If multiple answers are possible, choose the most likely one only. If there is n
 The output must follow the format: 'OCR scanned text: (your_answer)'. Do not explain yourself afterwards, do not include
 multiple valid outputs. Do not include any other information.'''
 
-normal_prompt = '''Be a good assistant and answer my question, only using information from the following prompt or relating to it, as well as 
+normal_prompt = '''Be a good assistant and answer my question, using information from the following prompt or relating to it, as well as 
 knowledge you have about this prompt. If no information is given or if the question is not relevant to the information given, 
 simply answer as normal, using any knowledge you have.'''
 
@@ -36,7 +37,7 @@ payload = {
 }
     
 # Perform a chat completion in a separate thread
-def chat_completion(prompt, info, mode="normal"):
+def chat_completion(prompt, info="", mode="normal"):
     while True:
         # If queue is empty, exit the loop
         if not prompt:
