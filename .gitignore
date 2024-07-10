@@ -10,4 +10,4 @@ venv/
 # Ignore streamlit secrets
 .streamlit/secrets.toml
 
-
+images/
