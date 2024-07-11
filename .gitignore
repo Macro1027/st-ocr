@@ -11,3 +11,5 @@ venv/
 .streamlit/secrets.toml
 
 images/
+
+test.py
