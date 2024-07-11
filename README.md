@@ -13,8 +13,6 @@ This project is a Streamlit-based Optical Character Recognition (OCR) applicatio
 <a href="https://st-ocr.streamlit.app/">Streamlit OCR + chatbot app</a>
 
 ### TODOS
-- [ ] Multilingual support 
-- [ ] Faster OCR
 - [ ] Less clunky freezing
 - [ ] Fix bugs
 
@@ -23,3 +21,5 @@ This project is a Streamlit-based Optical Character Recognition (OCR) applicatio
 - [x] Implement freeze function
 - [x] Implement chatbot API call
 - [x] Integrate code with streamlit
+- [x] Faster OCR
+- [x] Multilingual support 
