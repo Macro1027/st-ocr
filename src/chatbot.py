@@ -20,10 +20,6 @@ def run_chatbot():
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
 
-    # Stimulate chatbot response from PPX API
-    def get_chatbot_response(message):
-        return f"Chatbot says: {message}"
-
     # Display chat history
     for role, content in st.session_state.chat_history:
         with st.chat_message(role):
