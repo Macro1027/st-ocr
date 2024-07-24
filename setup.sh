@@ -1,10 +1,13 @@
-#!/bin/bash
+mkdir -p ~/.streamlit/
 
-# Update package list
-sudo apt-get update
+echo "\
+[general]\n\
+email = \"marcoleeml27@gmail.com\"\n\
+" > ~/.streamlit/credentials.toml
 
-# Install OpenGL library
-sudo apt-get install -y libgl1-mesa-glx
-
-# Install other dependencies
-pip install -r requirements.txt
+echo "\
+[server]\n\
+headless = true\n\
+enableCORS=false\n\
+port = $PORT\n\
+" > ~/.streamlit/config.toml
